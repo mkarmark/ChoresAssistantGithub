@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">ChoresAssistant</string>
+    <string name="action_settings">Settings</string>
+    <string-array name="chores_options_array">
+        <item>Grocery</item>
+        <item>Shopping</item>
+        <item>Laundry</item>
+        <item>Gardening</item>
+        <item>Autoshop</item>
+    </string-array>
+    <string name="facebook_app_id">1545111878880731</string>
+    <string name="fb_login_protocol_scheme">fb1545111878880731</string>
+</resources>
