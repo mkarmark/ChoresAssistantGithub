@@ -1,5 +1,6 @@
 package com.example.mital.choresassistant;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
@@ -40,7 +41,7 @@ public class CreateAndPostChore extends AppCompatActivity {
         spinner.setAdapter(adapter);
 
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-        //dbHelper.onUpgrade(db, 1, 2);
+        //dbHelper.onUpgrade(db, 0, 1);
 
         final Button saveChoreButton = (Button) findViewById(R.id.btnsavechore);
         saveChoreButton.setOnClickListener(new View.OnClickListener() {
@@ -76,15 +77,9 @@ public class CreateAndPostChore extends AppCompatActivity {
 //                System.out.println("strLocation: " + strLocation);
                 dbHelper.insertChore(strChore, strSpecifications, strDate, strTime, strEmail, strPhoneNumber, strLocation);
 
-                Cursor result = dbHelper.getAllChores();
-                result.moveToFirst();
-                String choreType = result.getString(result.getColumnIndex(ChoreDBHelper.CHORE_COLUMN_TYPE));
-                System.out.println("type: " + choreType);
+                Intent i = new Intent(CreateAndPostChore.this, Options_page.class);
+                startActivity(i);
 
-                while (result.moveToNext()) {
-                    choreType = result.getString(result.getColumnIndex(ChoreDBHelper.CHORE_COLUMN_TYPE));
-                    System.out.println("type: " + choreType);
-                }
             }
         });
     }

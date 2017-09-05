@@ -15,19 +15,16 @@ public class ChoreDBHelper extends SQLiteOpenHelper {
     // If you change the database schema, you must increment the database version.
     public static final String DATABASE_NAME = "SQLChores.db";
     private static final int DATABASE_VERSION = 1;
-    public static final String CHORE_TABLE_NAME = "chores";
-    public static final String CHORE_COLUMN_ID = "_id";
-    public static final String CHORE_COLUMN_TYPE = "chore";
-    public static final String CHORE_COLUMN_SPECIFICATIONS = "specifications";
-    public static final String CHORE_COLUMN_DATE = "date";
-    public static final String CHORE_COLUMN_TIME = "time";
-    public static final String CHORE_COLUMN_EMAIL = "email";
-    public static final String CHORE_COLUMN_PHONENUMBER = "phonenumber";
-    public static final String CHORE_COLUMN_LOCATION = "location";
+    public static final String CHORE_TABLE_NAME = "chores_table";
+    public static final String CHORE_COLUMN_ID = "chore_id";
+    public static final String CHORE_COLUMN_TYPE_ID = "chore_type_id";
+    public static final String CHORE_COLUMN_SPECIFICATIONS = "chore_specifications";
+    public static final String CHORE_COLUMN_USER_ID = "chore_user_id";
+    public static final String CHORE_COLUMN_IS_OFFER_MADE = "chore_is_offer_made";
+    public static final String CHORE_COLUMN_OFFER_USER_ID = "chore_offer_user_id";
+    public static final String CHORE_COLUMN_IS_OFFER_ACCEPTED = "chore_is_offer_accepted";
+    public static final String CHORE_COLUMN_IS_CHORE_COMPLETED = "chore_is_chore_completed";
 
-    public static final String PERSON_COLUMN_NAME = "name";
-    public static final String PERSON_COLUMN_GENDER = "gender";
-    public static final String PERSON_COLUMN_AGE = "age";
 
     public ChoreDBHelper(Context context) {
         super(context, DATABASE_NAME , null, DATABASE_VERSION);
@@ -37,13 +34,13 @@ public class ChoreDBHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE " + CHORE_TABLE_NAME + "(" +
                 CHORE_COLUMN_ID + " INTEGER PRIMARY KEY, " +
-                CHORE_COLUMN_TYPE + " TEXT, " +
+                CHORE_COLUMN_TYPE_ID + " INTEGER, " +
                 CHORE_COLUMN_SPECIFICATIONS + " TEXT, " +
-                CHORE_COLUMN_DATE + " TEXT, " +
-                CHORE_COLUMN_TIME + " TEXT, " +
-                CHORE_COLUMN_EMAIL + " TEXT, " +
-                CHORE_COLUMN_PHONENUMBER + " TEXT, " +
-                CHORE_COLUMN_LOCATION + " TEXT)"
+                CHORE_COLUMN_USER_ID + " INTEGER, " +
+                CHORE_COLUMN_IS_OFFER_MADE + " INTEGER, " +
+                CHORE_COLUMN_OFFER_USER_ID + " INTEGER, " +
+                CHORE_COLUMN_IS_OFFER_ACCEPTED + " INTEGER, " +
+                CHORE_COLUMN_IS_CHORE_COMPLETED + " INTEGER)"
         );
     }
 
@@ -53,46 +50,44 @@ public class ChoreDBHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public boolean insertChore(String type, String specifications, String date, String time, String email, String phoneNumber, String location) {
+    public boolean insertChore(int choreTypeID, String choreSpecifications, int userID) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put(CHORE_COLUMN_TYPE, type);
-        contentValues.put(CHORE_COLUMN_SPECIFICATIONS, specifications);
-        contentValues.put(CHORE_COLUMN_DATE, date);
-        contentValues.put(CHORE_COLUMN_TIME, time);
-        contentValues.put(CHORE_COLUMN_EMAIL, email);
-        contentValues.put(CHORE_COLUMN_PHONENUMBER, phoneNumber);
-        contentValues.put(CHORE_COLUMN_LOCATION, location);
+        contentValues.put(CHORE_COLUMN_TYPE_ID, choreTypeID);
+        contentValues.put(CHORE_COLUMN_SPECIFICATIONS, choreSpecifications);
+        contentValues.put(CHORE_COLUMN_USER_ID, userID);
+        contentValues.put(CHORE_COLUMN_IS_OFFER_MADE, 0);
+        contentValues.put(CHORE_COLUMN_OFFER_USER_ID, -1);
+        contentValues.put(CHORE_COLUMN_IS_OFFER_ACCEPTED, 0);
+        contentValues.put(CHORE_COLUMN_IS_CHORE_COMPLETED, 0);
         db.insert(CHORE_TABLE_NAME, null, contentValues);
         return true;
     }
 
-//    public boolean updatePerson(Integer id, String name, String gender, int age) {
-//        SQLiteDatabase db = this.getWritableDatabase();
-//        ContentValues contentValues = new ContentValues();
-//        contentValues.put(PERSON_COLUMN_NAME, name);
-//        contentValues.put(PERSON_COLUMN_GENDER, gender);
-//        contentValues.put(PERSON_COLUMN_AGE, age);
-//        db.update(PERSON_TABLE_NAME, contentValues, PERSON_COLUMN_ID + " = ? ", new String[] { Integer.toString(id) } );
-//        return true;
-//    }
-
-    public Cursor getChoresByUserID(String email, String phoneNumber) {
+    public Cursor getChoresPostedByUserID(int userID) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor res = db.rawQuery( "SELECT * FROM " + CHORE_TABLE_NAME + " WHERE " +
-                CHORE_COLUMN_EMAIL + "=? AND " + CHORE_COLUMN_PHONENUMBER + "=?", new String[] { email, phoneNumber } );
+                CHORE_COLUMN_USER_ID + "=?", new String[] { Integer.toString(userID) } );
         return res;
     }
+
+    public Cursor getChoresOfferedAndOrCompletedByUserID(int userID) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res = db.rawQuery( "SELECT * FROM " + CHORE_TABLE_NAME + " WHERE " +
+                CHORE_COLUMN_OFFER_USER_ID + "=?", new String[] { Integer.toString(userID) } );
+        return res;
+    }
+
+    public Cursor getChoresOfferedAndNotCompletedByUserID(int userID) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res = db.rawQuery( "SELECT * FROM " + CHORE_TABLE_NAME + " WHERE " +
+                CHORE_COLUMN_OFFER_USER_ID + "=? AND" + CHORE_COLUMN_IS_CHORE_COMPLETED + "=0", new String[] { Integer.toString(userID) } );
+        return res;
+    }
+
     public Cursor getAllChores() {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor res = db.rawQuery( "SELECT * FROM " + CHORE_TABLE_NAME, null );
         return res;
     }
-
-//    public Integer deletePerson(Integer id) {
-//        SQLiteDatabase db = this.getWritableDatabase();
-//        return db.delete(PERSON_TABLE_NAME,
-//                PERSON_COLUMN_ID + " = ? ",
-//                new String[] { Integer.toString(id) });
-//    }
 }
