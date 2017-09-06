@@ -32,6 +32,8 @@ public class MainActivity extends AppCompatActivity {
     String name;
     boolean isLoggedIn = false;
 
+    private UserDBHelper dbHelper = new UserDBHelper(MainActivity.this);
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         if (isLoggedIn) {
-            Intent i = new Intent(MainActivity.this, Options_page.class);
+            Intent i = new Intent(MainActivity.this, Options.class);
             Bundle b = new Bundle();
             b.putString("email", email);
             b.putString("birthday", birthday);
@@ -84,10 +86,11 @@ public class MainActivity extends AppCompatActivity {
                 parameters.putString("fields", "id,name,email,gender,birthday");
                 request.setParameters(parameters);
                 request.executeAsync();
-                Intent i = new Intent(MainActivity.this, Options_page.class);
+                Intent i = new Intent(MainActivity.this, Options.class);
                 i.putExtra("email", email);
                 i.putExtra("birthday", birthday);
                 i.putExtra("name", name);
+
                 startActivity(i);
             }
 
@@ -149,7 +152,7 @@ public class MainActivity extends AppCompatActivity {
                             MainActivity.this.birthday = object.getString("birthday"); // 01/31/1980 format
                             MainActivity.this.name = object.getString("name");
                             if (isLoggedIn) {
-                                Intent i = new Intent(MainActivity.this, Options_page.class);
+                                Intent i = new Intent(MainActivity.this, Options.class);
                                 Bundle b = new Bundle();
                                 b.putString("email", email);
                                 b.putString("birthday", birthday);

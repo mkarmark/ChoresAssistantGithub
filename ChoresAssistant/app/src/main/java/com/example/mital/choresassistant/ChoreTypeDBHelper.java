@@ -2,6 +2,7 @@ package com.example.mital.choresassistant;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
@@ -40,5 +41,25 @@ public class ChoreTypeDBHelper extends SQLiteOpenHelper {
         contentValues.put(CHORE_TYPE_COLUMN_NAME, choreTypeName);
         db.insert(CHORE_TYPE_TABLE_NAME, null, contentValues);
         return true;
+    }
+
+    public Cursor getChoreTypeIDByChoreTypeName(String choreTypeName) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res = db.rawQuery( "SELECT * FROM " + CHORE_TYPE_COLUMN_NAME + " WHERE " +
+                CHORE_TYPE_TABLE_NAME + "=?", new String[] { choreTypeName } );
+        return res;
+    }
+
+    public Cursor getChoreTypeNameByChoreTypeID(int choreTypeID) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res = db.rawQuery( "SELECT * FROM " + CHORE_TYPE_COLUMN_NAME + " WHERE " +
+                CHORE_TYPE_TABLE_NAME + "=?", new String[] { Integer.toString(choreTypeID) } );
+        return res;
+    }
+
+    public Cursor getAllChoreTypes() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res = db.rawQuery( "SELECT * FROM " + CHORE_TYPE_COLUMN_NAME, null );
+        return res;
     }
 }

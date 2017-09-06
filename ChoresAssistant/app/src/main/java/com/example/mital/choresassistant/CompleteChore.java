@@ -13,37 +13,32 @@ import java.util.ArrayList;
 
 public class CompleteChore extends AppCompatActivity {
 
-    private ChoreDBHelper dbHelper = new ChoreDBHelper(CompleteChore.this);
+    private ChoreDBHelper choreDBHelper = new ChoreDBHelper(CompleteChore.this);
+    private ChoreTypeDBHelper choreTypeDBHelper = new ChoreTypeDBHelper(CompleteChore.this);
+    private UserDBHelper userDBHelper = new UserDBHelper(CompleteChore.this);
     private ListView listView;
     private ArrayList<String> list;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_complete_chore);
-        Cursor result = dbHelper.getAllChores();
-        result.moveToFirst();
+        Cursor choreResult = choreDBHelper.getAllChores();
+        choreResult.moveToFirst();
         list= new ArrayList<String>();
-        String choreType = result.getString(result.getColumnIndex(ChoreDBHelper.CHORE_COLUMN_TYPE));
-        String choreSpecifications = result.getString(result.getColumnIndex(ChoreDBHelper.CHORE_COLUMN_SPECIFICATIONS));
-        String choreDate = result.getString(result.getColumnIndex(ChoreDBHelper.CHORE_COLUMN_DATE));
-        String choreTime = result.getString(result.getColumnIndex(ChoreDBHelper.CHORE_COLUMN_TIME));
-        String choreEmail = result.getString(result.getColumnIndex(ChoreDBHelper.CHORE_COLUMN_EMAIL));
-        String chorePhoneNumber = result.getString(result.getColumnIndex(ChoreDBHelper.CHORE_COLUMN_PHONENUMBER));
-        String choreLocation = result.getString(result.getColumnIndex(ChoreDBHelper.CHORE_COLUMN_LOCATION));
-        String listStr = "Type: " + choreType + "\nSpecifications: " + choreSpecifications + "\nDeadline: " + choreDate + " " + choreTime + "\nContact: " + choreEmail + ", " + chorePhoneNumber + "\nLocation: " + choreLocation;
-        list.add(listStr);
 
-        while (result.moveToNext()) {
-            choreType = result.getString(result.getColumnIndex(ChoreDBHelper.CHORE_COLUMN_TYPE));
-            choreSpecifications = result.getString(result.getColumnIndex(ChoreDBHelper.CHORE_COLUMN_SPECIFICATIONS));
-            choreDate = result.getString(result.getColumnIndex(ChoreDBHelper.CHORE_COLUMN_DATE));
-            choreTime = result.getString(result.getColumnIndex(ChoreDBHelper.CHORE_COLUMN_TIME));
-            choreEmail = result.getString(result.getColumnIndex(ChoreDBHelper.CHORE_COLUMN_EMAIL));
-            chorePhoneNumber = result.getString(result.getColumnIndex(ChoreDBHelper.CHORE_COLUMN_PHONENUMBER));
-            choreLocation = result.getString(result.getColumnIndex(ChoreDBHelper.CHORE_COLUMN_LOCATION));
-            listStr = "Type: " + choreType + "\nSpecifications: " + choreSpecifications + "\nDeadline: " + choreDate + " " + choreTime + "\nContact: " + choreEmail + ", " + chorePhoneNumber + "\nLocation: " + choreLocation;
-            list.add(listStr);
-        }
+         do {
+             int choreTypeID = choreResult.getInt(choreResult.getColumnIndex(ChoreDBHelper.CHORE_COLUMN_TYPE_ID));
+             Cursor choreTypeResult = choreTypeDBHelper.getChoreTypeNameByChoreTypeID(choreTypeID);
+             String choreType = choreTypeResult.getString(choreTypeResult.getColumnIndex(ChoreTypeDBHelper.CHORE_TYPE_COLUMN_NAME));
+             String choreSpecifications = choreResult.getString(choreResult.getColumnIndex(ChoreDBHelper.CHORE_COLUMN_SPECIFICATIONS));
+             int userID = choreResult.getInt(choreResult.getColumnIndex(ChoreDBHelper.CHORE_COLUMN_USER_ID));
+             Cursor userResult = userDBHelper.getUserEmailPhoneAddressByUserID(userID);
+             String choreEmail = userResult.getString(userResult.getColumnIndex(UserDBHelper.USER_COLUMN_EMAIL));
+             String chorePhoneNumber = userResult.getString(userResult.getColumnIndex(UserDBHelper.USER_COLUMN_PHONE));
+             String choreLocation = userResult.getString(userResult.getColumnIndex(UserDBHelper.USER_COLUMN_ADDRESS));
+             String listStr = "Type: " + choreType + "\nSpecifications: " + choreSpecifications + "\nContact: " + choreEmail + ", " + chorePhoneNumber + "\nLocation: " + choreLocation;
+             list.add(listStr);
+        } while (choreResult.moveToNext());
         ArrayAdapter adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, list);
         listView = (ListView)findViewById(R.id.listView1);
         listView.setAdapter(adapter);

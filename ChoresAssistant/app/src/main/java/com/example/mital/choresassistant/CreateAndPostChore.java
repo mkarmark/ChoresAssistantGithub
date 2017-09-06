@@ -1,7 +1,6 @@
 package com.example.mital.choresassistant;
 
 import android.content.Intent;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -77,7 +76,7 @@ public class CreateAndPostChore extends AppCompatActivity {
 //                System.out.println("strLocation: " + strLocation);
                 dbHelper.insertChore(strChore, strSpecifications, strDate, strTime, strEmail, strPhoneNumber, strLocation);
 
-                Intent i = new Intent(CreateAndPostChore.this, Options_page.class);
+                Intent i = new Intent(CreateAndPostChore.this, Options.class);
                 startActivity(i);
 
             }

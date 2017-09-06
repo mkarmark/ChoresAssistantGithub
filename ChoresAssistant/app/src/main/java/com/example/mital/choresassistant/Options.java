@@ -15,7 +15,7 @@ import com.facebook.HttpMethod;
 import com.facebook.login.LoginManager;
 import com.facebook.login.widget.LoginButton;
 
-public class Options_page extends AppCompatActivity {
+public class Options extends AppCompatActivity {
     LoginButton loginButton;
     boolean isLogOutButton = false;
     String email;
@@ -28,7 +28,7 @@ public class Options_page extends AppCompatActivity {
             @Override
             public void onInitialized() {
                 if(AccessToken.getCurrentAccessToken() == null){
-                    Intent i = new Intent(Options_page.this, MainActivity.class);
+                    Intent i = new Intent(Options.this, MainActivity.class);
                     startActivity(i);
                 } else {
                     isLogOutButton = true;
@@ -57,7 +57,7 @@ public class Options_page extends AppCompatActivity {
                         }
                     }).executeAsync();
                     try{
-                        Intent i = new Intent(Options_page.this, MainActivity.class);
+                        Intent i = new Intent(Options.this, MainActivity.class);
                         startActivity(i);
                     }
                     catch(Exception ex)
@@ -74,7 +74,7 @@ public class Options_page extends AppCompatActivity {
             public void onClick(View view) {
 //                setContentView(R.layout.activity_post_chore);
                 try{
-                    Intent i = new Intent(Options_page.this, CreateAndPostChore.class);
+                    Intent i = new Intent(Options.this, CreateAndPostChore.class);
                     Bundle bundle = new Bundle();
                     bundle.putString("email", email);
                     bundle.putString("birthday", birthday);
@@ -94,7 +94,7 @@ public class Options_page extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 try{
-                    Intent i = new Intent(Options_page.this, CompleteChore.class);
+                    Intent i = new Intent(Options.this, CompleteChore.class);
                     startActivity(i);
                 }
                 catch(Exception ex)
