@@ -1,6 +1,8 @@
 package com.example.mital.choresassistant;
 
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -36,26 +38,40 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
 
+
+        super.onCreate(savedInstanceState);
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        //dbHelper.onUpgrade(db, 0, 1);
+        System.out.println("MainActivity oncreate");
         FacebookSdk.sdkInitialize(getApplicationContext(), new FacebookSdk.InitializeCallback() {
             @Override
             public void onInitialized() {
                 if(AccessToken.getCurrentAccessToken() != null) {
+                    System.out.println("in this statement");
+                    System.out.println("right before the cursor");
+                    System.out.println("dbHelper = " + dbHelper);
+                    Cursor cursor = dbHelper.getAllUsers();
+                    System.out.println("user database size: " + cursor.getCount());
                     isLoggedIn = true;
                 }
             }
         });
+
         if (isLoggedIn) {
+            System.out.println("i am logged in");
             Intent i = new Intent(MainActivity.this, Options.class);
             Bundle b = new Bundle();
             b.putString("email", email);
             b.putString("birthday", birthday);
             b.putString("name", name);
+            Cursor cursor = dbHelper.getAllUsers();
+            System.out.println("user database size: " + cursor.getCount());
             i.putExtras(b);
             startActivity(i);
             return;
         }
+
         setContentView(R.layout.activity_main);
         callbackManager = CallbackManager.Factory.create();
         loginButton = (LoginButton)findViewById(R.id.login_button);
@@ -76,6 +92,7 @@ public class MainActivity extends AppCompatActivity {
                                     MainActivity.this.email = object.getString("email");
                                     MainActivity.this.birthday = object.getString("birthday"); // 01/31/1980 format
                                     MainActivity.this.name = object.getString("name");
+                                    dbHelper.insertUser(MainActivity.this.name, MainActivity.this.email);
                                 } catch (JSONException jsone) {
                                     System.out.println("json exception");
                                 }
@@ -137,7 +154,9 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onResume() {
+
         super.onResume();
+        System.out.println("Main Activity on resume");
         GraphRequest request = GraphRequest.newMeRequest(
                 AccessToken.getCurrentAccessToken(),
                 new GraphRequest.GraphJSONObjectCallback() {
@@ -147,10 +166,15 @@ public class MainActivity extends AppCompatActivity {
 
                         // Application code
                         try {
+                            System.out.println("in resume login activity");
                             if (object == null) return;
                             MainActivity.this.email = object.getString("email");
                             MainActivity.this.birthday = object.getString("birthday"); // 01/31/1980 format
                             MainActivity.this.name = object.getString("name");
+                            System.out.println("done saving variables");
+                            System.out.println("dbHelper = " + dbHelper);
+                            Cursor cursor = dbHelper.getAllUsers();
+                            System.out.println("user database size: " + cursor.getCount());
                             if (isLoggedIn) {
                                 Intent i = new Intent(MainActivity.this, Options.class);
                                 Bundle b = new Bundle();
@@ -158,6 +182,9 @@ public class MainActivity extends AppCompatActivity {
                                 b.putString("birthday", birthday);
                                 b.putString("name", name);
                                 i.putExtras(b);
+                                System.out.println("onresume: in this statement");
+                                System.out.println("right before the cursor");
+
                                 startActivity(i);
                                 return;
                             }

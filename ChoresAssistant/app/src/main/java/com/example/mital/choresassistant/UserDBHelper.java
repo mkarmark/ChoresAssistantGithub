@@ -66,6 +66,15 @@ public class UserDBHelper extends SQLiteOpenHelper {
         return res;
     }
 
+    public Cursor getAllUsers() {
+        System.out.println("In get all users method");
+        SQLiteDatabase db = this.getReadableDatabase();
+        System.out.println("a");
+        Cursor res = db.rawQuery( "SELECT * FROM " + USER_TABLE_NAME, null );
+        System.out.println("b");
+        return res;
+    }
+
     public boolean updateUserPhoneNumber(int userID, String phoneNumber) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues contentValues = new ContentValues();

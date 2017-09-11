@@ -45,21 +45,21 @@ public class ChoreTypeDBHelper extends SQLiteOpenHelper {
 
     public Cursor getChoreTypeIDByChoreTypeName(String choreTypeName) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res = db.rawQuery( "SELECT * FROM " + CHORE_TYPE_COLUMN_NAME + " WHERE " +
-                CHORE_TYPE_TABLE_NAME + "=?", new String[] { choreTypeName } );
+        Cursor res = db.rawQuery( "SELECT * FROM " + CHORE_TYPE_TABLE_NAME + " WHERE " +
+                CHORE_TYPE_COLUMN_NAME + "=?", new String[] { choreTypeName } );
         return res;
     }
 
     public Cursor getChoreTypeNameByChoreTypeID(int choreTypeID) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res = db.rawQuery( "SELECT * FROM " + CHORE_TYPE_COLUMN_NAME + " WHERE " +
-                CHORE_TYPE_TABLE_NAME + "=?", new String[] { Integer.toString(choreTypeID) } );
+        Cursor res = db.rawQuery( "SELECT * FROM " + CHORE_TYPE_TABLE_NAME + " WHERE " +
+                CHORE_TYPE_COLUMN_NAME + "=?", new String[] { Integer.toString(choreTypeID) } );
         return res;
     }
 
     public Cursor getAllChoreTypes() {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res = db.rawQuery( "SELECT * FROM " + CHORE_TYPE_COLUMN_NAME, null );
+        Cursor res = db.rawQuery( "SELECT * FROM " + CHORE_TYPE_TABLE_NAME, null );
         return res;
     }
 }
